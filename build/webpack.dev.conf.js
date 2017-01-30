@@ -10,7 +10,7 @@ var env = process.env.NODE_ENV;
 
 module.exports = merge(baseWebpackConfig, {
   entry: {
-    'vue-balloons-demo': [path.resolve(__dirname, './devClient.js'), path.resolve(__dirname, '../demo/main.js')]
+    'vue-infinite-table-demo': [path.resolve(__dirname, './devClient.js'), path.resolve(__dirname, '../demo/main.js')]
   },
   output: {
     path: path.resolve(__dirname, '../dist/demo'),
