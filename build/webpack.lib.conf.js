@@ -4,11 +4,11 @@ var baseWebpackConfig = require('./webpack.base.conf')
 
 module.exports = merge(baseWebpackConfig, {
   entry: {
-    'vue-balloons': './lib/index.js'
+    'vue-infinite-table': './lib/index.js'
   },
   output: {
     filename: './dist/[name].js',
-    library: 'VueBalloons',
+    library: 'InfiniteTable',
     libraryTarget: 'umd'
   },
   plugins: [
@@ -21,11 +21,18 @@ module.exports = merge(baseWebpackConfig, {
         warnings: false
       }
     }),
-    new webpack.optimize.OccurrenceOrderPlugin()
-  ],
-  vue: {
-    loaders: {
-      less: 'vue-style-loader!css-loader!less-loader'
-    }
-  }
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.LoaderOptionsPlugin({
+      vue: {
+        loaders: {
+          less: 'vue-style-loader!css-loader!less-loader',
+          postcss: [
+            require('autoprefixer')({
+              browsers: ['last 2 versions']
+            })
+          ]
+        }
+      }
+    })
+  ]
 })

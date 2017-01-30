@@ -9,13 +9,12 @@ var env = process.env.NODE_ENV;
 
 module.exports = merge(baseWebpackConfig, {
   entry: {
-    'vue-balloons-demo': path.resolve(__dirname, '../demo/main.js')
+    'vue-infinite-table-demo': path.resolve(__dirname, '../demo/main.js')
   },
   output: {
     path: path.resolve(__dirname, '../dist/demo'),
     publicPath: '/',
-    filename: 'js/[name].[chunkhash].js',
-    chunkFile: 'js/[id].[chunkhash].js'
+    filename: 'js/[name].[chunkhash].js'
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -56,11 +55,18 @@ module.exports = merge(baseWebpackConfig, {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest',
       chunks: ['vendor']
+    }),
+    new webpack.LoaderOptionsPlugin({
+      vue: {
+        loaders: {
+          less: ExtractTextPlugin.extract({fallbackLoader: 'vue-style-loader', loader: 'css-loader!less-loader'}),
+          postcss: [
+            require('autoprefixer')({
+              browsers: ['last 2 versions']
+            })
+          ]
+        }
+      }
     })
-  ],
-  vue: {
-    loaders: {
-      less: ExtractTextPlugin.extract('vue-style-loader', 'css-loader!less-loader')
-    }
-  }
+  ]
 })

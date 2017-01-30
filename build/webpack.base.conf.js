@@ -6,37 +6,29 @@ var useCssSourceMap = env === 'development' || false;
 
 module.exports = {
   resolve: {
-    extensions: ['', '.js', '.vue', '.json'],
-    fallback: [path.join(__dirname, '../node_modules')],
+    extensions: ['.js', '.vue', '.json'],
+    modules: [
+      path.join(__dirname, '../node_modules')
+    ],
     alias: {
       'vue$': 'vue/dist/vue.common.js'
     }
   },
-  resolveLoader: {
-    fallback: [path.join(__dirname, '../node_modules')]
-  },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.vue$/,
-        loader: 'vue'
+        use: 'vue-loader'
       },
       {
         test: /\.js$/,
-        loader: 'babel',
+        use: 'babel-loader',
         include: [
           path.join(projectRoot, 'lib'),
           path.join(projectRoot, 'demo')
         ],
         exclude: /node_modules/
       }
-    ]
-  },
-  vue: {
-    postcss: [
-      require('autoprefixer')({
-        browsers: ['last 2 versions']
-      })
     ]
   }
 }
