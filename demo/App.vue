@@ -2,7 +2,16 @@
   <div>
     <h1>Infinite Table DEMO</h1>
 
-    <infiniteTable :columns="columns" :data="data" @consumeData="onConsumeData" />
+    <div class="demoInfiniteTableContainer">
+
+      <infiniteTable 
+        :columns="['id', 'name', 'country']" 
+        :data="data" 
+        @consumeData="onConsumeData" 
+        :options="{ initialPageSize: 50, scrollContainer: '.demoInfiniteTableContainer' }"
+        :debug="true" />
+
+    </div>
   
   </div>
 </template>
@@ -15,8 +24,7 @@
     name: 'app',
     data () {
       return {
-        data: [],
-        columns: ['id', 'name', 'country']
+        data: []
       }
     },
     components: {
@@ -30,6 +38,9 @@
   };
 </script>
 
-<style lang="less"> 
-
+<style lang="less" scoped> 
+  .demoInfiniteTableContainer {
+    max-height: 50vh;
+    overflow: auto;
+  }
 </style>
