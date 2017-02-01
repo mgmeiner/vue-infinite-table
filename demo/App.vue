@@ -1,46 +1,45 @@
 <template>
-  <div>
-    <h1>Infinite Table DEMO</h1>
+  <div class="page">
+    <header>
+      <div class="container">
+        <h1>VUE-INFINITE-TABLE</h1>
+      </div>
+    </header>
 
-    <div class="demoInfiniteTableContainer">
-
-      <infiniteTable 
-        :columns="['id', 'name', 'country']" 
-        :data="data" 
-        @consumeData="onConsumeData" 
-        :options="{ initialPageSize: 50, scrollContainer: '.demoInfiniteTableContainer' }"
-        :debug="true" />
-
-    </div>
-  
+    <main>
+      <div class="container">
+        <home />
+      </div>
+    </main>
   </div>
 </template>
 
 <script>
-  import infiniteTable from '../lib/InfiniteTable';
-  import sampleData from './data.json';
+  import Home from './Home';
 
   export default {
     name: 'app',
-    data () {
-      return {
-        data: []
-      }
-    },
     components: {
-      infiniteTable
-    },
-    methods: {
-      onConsumeData (dataOptions) {
-        this.data.push.apply(this.data, sampleData.companies.slice(dataOptions.offset, dataOptions.endIndex));
-      }
+      home: Home
     }
   };
 </script>
 
-<style lang="less" scoped> 
-  .demoInfiniteTableContainer {
-    max-height: 50vh;
-    overflow: auto;
+<style lang="less"> 
+  .page {
+    header {
+      padding: 4rem;
+      color: #FFF;
+      background: #00bf8f;  
+      background: linear-gradient(to left, #00bf8f , #001510);  
+
+      h1 {
+        margin: 0;
+      }
+    }
+
+    main {
+      padding-top: 1rem;
+    }
   }
 </style>

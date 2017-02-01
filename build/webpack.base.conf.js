@@ -6,7 +6,7 @@ var useCssSourceMap = env === 'development' || false;
 
 module.exports = {
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    extensions: ['.js', '.vue', '.css', '.json'],
     modules: [
       path.join(__dirname, '../node_modules')
     ],
@@ -19,6 +19,14 @@ module.exports = {
       {
         test: /\.vue$/,
         use: 'vue-loader'
+      },
+      {
+        test: /\.css$/,
+        use: [ 'style-loader', 'css-loader' ]
+      },
+      {
+        test: /\.less$/,
+        use: [ 'style-loader', 'less-loader' ]
       },
       {
         test: /\.js$/,

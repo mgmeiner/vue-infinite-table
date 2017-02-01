@@ -25,7 +25,7 @@ module.exports = merge(baseWebpackConfig, {
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     new FriendlyErrors(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
