@@ -3,9 +3,14 @@
     <div v-if="debug" class="debug">DataCount: {{data.length}}</div>
 
     <table>
+      <thead v-if="_options.header.show">
+        <tr>
+          <th v-for="column in columns">{{column.displayName}}</th>
+        </tr>
+      </thead>
       <tbody>
         <tr v-for="row in data">
-          <td v-for="column in columns">{{row[column]}}</td>
+          <td v-for="column in columns">{{row[column.name]}}</td>
         </tr>
       </tbody>
     </table>
@@ -21,7 +26,10 @@
   const defaultOptions = {
     initialPageSize: 20,
     itemsToLoadOnScroll: 5,
-    scrollContainer: 'body'
+    scrollContainer: 'body',
+    header: {
+      show: true
+    }
   }
 
   export default {

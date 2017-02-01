@@ -2,7 +2,7 @@
   <div class="demoInfiniteTableContainer">
 
       <infiniteTable 
-        :columns="['id', 'name', 'country']" 
+        :columns="[{ name: 'id', displayName: 'ID' }, { name: 'name', displayName: 'Name' }, { name: 'country', displayName: 'Country' }]" 
         :data="data" 
         @consumeData="onConsumeData" 
         :options="{ initialPageSize: 50, scrollContainer: '.demoInfiniteTableContainer' }"
