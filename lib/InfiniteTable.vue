@@ -3,16 +3,23 @@
     <div v-if="debug" class="debug">DataCount: {{data.length}}</div>
 
     <table>
+
       <thead v-if="_options.header.show">
         <tr>
-          <th v-for="column in columns">{{column.displayName}}</th>
+          <th v-for="column in columns">
+            <slot :name="'th-' + column.name" :column="column">
+              {{column.displayName}}
+            </slot> 
+          </th>
         </tr>
       </thead>
+
       <tbody>
         <tr v-for="row in data">
           <td v-for="column in columns">{{row[column.name]}}</td>
         </tr>
       </tbody>
+
     </table>
 
     <scrollManager @pageEnd="onPageEnd" :scrollContainer="_options.scrollContainer" />

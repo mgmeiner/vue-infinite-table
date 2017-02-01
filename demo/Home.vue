@@ -6,7 +6,9 @@
         :data="data" 
         @consumeData="onConsumeData" 
         :options="{ initialPageSize: 50, scrollContainer: '.demoInfiniteTableContainer' }"
-        :debug="false" />
+        :debug="false">
+
+      </infiniteTable >
 
     </div>
 </template>
