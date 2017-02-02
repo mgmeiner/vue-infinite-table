@@ -1,5 +1,6 @@
 <template>
-  <div class="demoInfiniteTableContainer">
+  <div class="container">
+    <div class="demoInfiniteTableContainer">
 
       <infiniteTable 
         :columns="[{ name: 'id', displayName: 'ID' }, { name: 'name', displayName: 'Name' }, { name: 'country', displayName: 'Country' }]" 
@@ -7,10 +8,10 @@
         @consumeData="onConsumeData" 
         :options="{ initialPageSize: 50, scrollContainer: '.demoInfiniteTableContainer' }"
         :debug="false">
-
       </infiniteTable >
 
     </div>
+   </div>
 </template>
 
 <script>

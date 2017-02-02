@@ -3,13 +3,16 @@
     <header>
       <div class="container">
         <h1>VUE-INFINITE-TABLE</h1>
+
+        <nav>
+          <router-link to="/">Home</router-link>
+          <router-link to="/advanced">Advcanced</router-link>
+        </nav>
       </div>
     </header>
 
     <main>
-      <div class="container">
-        <home />
-      </div>
+      <router-view />
     </main>
   </div>
 </template>
@@ -27,7 +30,14 @@
 
 <style lang="less"> 
   .page {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-flow: column;
+    flex-wrap: none;
+
     header {
+      flex-shrink: 0;
       padding: 4rem;
       color: #FFF;
       background: #00bf8f;  
@@ -39,6 +49,9 @@
     }
 
     main {
+      flex-grow: 1;
+      display: flex;
+      overflow: auto;
       padding-top: 1rem;
     }
   }
