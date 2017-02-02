@@ -52,7 +52,7 @@
             this.$emit('pageEnd');
           } 
         }
-      }, 100)
+      }, 50)
     },
     destroyed () {
       this.scrollContainerEl.removeEventListener('scroll', this.onScroll);

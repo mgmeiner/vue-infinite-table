@@ -6,10 +6,15 @@
 
       <thead v-if="_options.header.show">
         <tr>
-          <th v-for="column in columns">
-            <slot :name="'th-' + column.name" :column="column">
-              {{column.displayName}}
-            </slot>
+          <th v-for="column in columns" :class="{sortable: column.sortable}" @click="sort(column)">
+            <div>
+              <slot :name="'th-' + column.name" :column="column">
+                {{column.displayName}} 
+                <span v-if="column.sortable && column.name === sortColumn">
+                  <span v-if="sortDirection === 'ASC'">▲</span><span v-else>▼</span>
+                </span>
+              </slot>
+            </div>
           </th>
         </tr>
       </thead>
@@ -39,9 +44,12 @@
     itemsToLoadOnScroll: 5,
     pageEndMode: 'late',
     scrollContainer: 'body',
+    defaultSortColumn: null,
+    defaultSortDirection: 'ASC',
     header: {
       show: true
-    }
+    },
+    debug: false
   }
 
   export default {
@@ -57,20 +65,24 @@
       },
       options: {
         type: Object
-      },
-      debug: {
-        type: Boolean,
-        default: false
       }
     },
     data () {
       return {
         dataOptions: { },
-        _options: null
+        _options: null,
+        sortColumn: null,
+        sortDirection: null
       }
     },
     created () {
       this._options = _merge(defaultOptions, this.options);
+
+      this.sortDirection = this._options.defaultSortDirection;
+
+      if (this._options.defaultSortColumn) {
+        this.sortColumn = this._options.defaultSortColumn;
+      }
 
       this.dataOptions = {
         offset: this._options.initialPageSize,
@@ -92,6 +104,13 @@
       },
       consumeData (dataOptions) {
         this.$emit('consumeData', dataOptions);
+      },
+      sort (column) {
+        if (column.sortable) {
+          this.sortDirection = this.sortDirection === 'DESC' ? 'ASC' : 'DESC';
+          this.sortColumn = column.name;
+          this.$emit('sort', this.sortColumn, this.sortDirection);
+        } 
       }
     },
     components: {
@@ -106,6 +125,13 @@
 
     table {
       width: 100%;
+
+      th {
+        &.sortable {
+          user-select: none;
+          cursor: pointer;
+        }
+      }
     }
 
     .debug {
