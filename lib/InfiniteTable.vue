@@ -26,7 +26,7 @@
 
     </table>
 
-    <scrollManager @pageEnd="onPageEnd" :scrollContainer="_options.scrollContainer" />
+    <scrollManager @pageEnd="onPageEnd" :scrollContainer="_options.scrollContainer" :pageEndMode="_options.pageEndMode" />
   </div>
 </template>
 
@@ -37,6 +37,7 @@
   const defaultOptions = {
     initialPageSize: 20,
     itemsToLoadOnScroll: 5,
+    pageEndMode: 'late',
     scrollContainer: 'body',
     header: {
       show: true
