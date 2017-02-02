@@ -4,7 +4,7 @@
         :columns="columns" 
         :data="data" 
         @consumeData="onConsumeData" 
-        :options="{ initialPageSize: 50, scrollContainer: 'main' }"
+        :options="{ initialPageSize: 15, itemsToLoadOnScroll: 10, scrollContainer: 'main' }"
         :debug="false">
 
         <template slot="td-actions" scope="scope">
