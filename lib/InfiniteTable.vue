@@ -9,14 +9,18 @@
           <th v-for="column in columns">
             <slot :name="'th-' + column.name" :column="column">
               {{column.displayName}}
-            </slot> 
+            </slot>
           </th>
         </tr>
       </thead>
 
       <tbody>
-        <tr v-for="row in data">
-          <td v-for="column in columns">{{row[column.name]}}</td>
+        <tr v-for="(row, i) in data">
+          <td v-for="column in columns">
+            <slot :name="'td-' + column.name" :column="column" :row="row" :value="row[column.name]" :index="i">
+               {{row[column.name]}}
+            </slot>
+          </td>
         </tr>
       </tbody>
 
