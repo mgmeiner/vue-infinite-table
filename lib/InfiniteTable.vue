@@ -58,10 +58,6 @@
   export default {
     name: 'vueInfiniteTable',
     props: {
-      data: {
-        type: Array,
-        required: true
-      },
       columns: {
         type: Array,
         required: true
@@ -72,7 +68,8 @@
     },
     data () {
       return {
-        dataOptions: { },
+        data: [],
+        consumeOptions: {},
         _options: null,
         sortColumn: null,
         sortDirection: null
@@ -82,37 +79,56 @@
       this._options = _merge(defaultOptions, this.options);
 
       this.sortDirection = this._options.defaultSortDirection;
-
       if (this._options.defaultSortColumn) {
         this.sortColumn = this._options.defaultSortColumn;
       }
 
-      this.dataOptions = {
-        offset: this._options.initialPageSize,
-        pageSize: this._options.itemsToLoadOnScroll,
-        endIndex: this._options.initialPageSize + this._options.itemsToLoadOnScroll
-      }
-
-      this.consumeData({
-        offset: 0,
-        pageSize: this._options.initialPageSize,
-        endIndex: this._options.initialPageSize
-      });
+      this.init();
     },
     methods: {
       onPageEnd () {
-        this.dataOptions.offset += this._options.itemsToLoadOnScroll;
-        this.dataOptions.endIndex += this._options.itemsToLoadOnScroll;
+        this.consumeOptions.page++;
+        this.consumeOptions.offset += this._options.itemsToLoadOnScroll;
+        this.consumeOptions.endIndex += this._options.itemsToLoadOnScroll;
         this.consumeData(this.dataOptions);
       },
       consumeData (dataOptions) {
         this.$emit('consumeData', dataOptions);
       },
+      init () {
+        this.consumeOptions = {
+          page: 0,
+          offset: this._options.initialPageSize,
+          pageSize: this._options.itemsToLoadOnScroll,
+          endIndex: this._options.initialPageSize + this._options.itemsToLoadOnScroll,
+          sortColumn: this.sortColumn,
+          sortDirection: this.sortDirection
+        }
+
+        this.consumeData({
+          page: 0,
+          offset: 0,
+          pageSize: this._options.initialPageSize,
+          endIndex: this._options.initialPageSize,
+          sortColumn: this.sortColumn,
+          sortDirection: this.sortDirection
+        });
+      },
+      pushData(data) {
+        if (this.dataOptions.page === 0) {
+          this.data = data;
+        } else {
+          this.data.push.apply(this.data, data);
+        }
+      },
+      refresh () {
+        this.init();
+      },
       sort (column) {
         if (column.sortable) {
           this.sortDirection = this.sortDirection === 'DESC' ? 'ASC' : 'DESC';
           this.sortColumn = column.name;
-          this.$emit('sort', this.sortColumn, this.sortDirection);
+          this.refresh();
         }
       }
     },
