@@ -90,10 +90,10 @@
         this.consumeOptions.page++;
         this.consumeOptions.offset += this._options.itemsToLoadOnScroll;
         this.consumeOptions.endIndex += this._options.itemsToLoadOnScroll;
-        this.consumeData(this.dataOptions);
+        this.consumeData(this.consumeOptions);
       },
-      consumeData (dataOptions) {
-        this.$emit('consumeData', dataOptions);
+      consumeData (consumeOptions) {
+        this.$emit('consumeData', consumeOptions);
       },
       init () {
         this.consumeOptions = {
@@ -115,7 +115,7 @@
         });
       },
       pushData(data) {
-        if (this.dataOptions.page === 0) {
+        if (this.consumeOptions.page === 0) {
           this.data = data;
         } else {
           this.data.push.apply(this.data, data);
