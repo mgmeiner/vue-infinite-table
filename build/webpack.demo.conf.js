@@ -55,18 +55,6 @@ module.exports = merge(baseWebpackConfig, {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest',
       chunks: ['vendor']
-    }),
-    new webpack.LoaderOptionsPlugin({
-      vue: {
-        loaders: {
-          less: ExtractTextPlugin.extract({fallbackLoader: 'vue-style-loader', loader: 'css-loader!less-loader'}),
-          postcss: [
-            require('autoprefixer')({
-              browsers: ['last 2 versions']
-            })
-          ]
-        }
-      }
     })
   ]
 })

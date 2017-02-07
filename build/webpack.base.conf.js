@@ -18,19 +18,29 @@ module.exports = {
     rules: [
       {
         test: /\.vue$/,
-        use: 'vue-loader'
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+            less: 'vue-style-loader!css-loader!less-loader' //TODO: enable css-extracting for demo ExtractTextPlugin.extract({fallbackLoader: 'vue-style-loader', loader: 'css-loader!less-loader'})
+          },
+          postcss: [
+            require('autoprefixer')({
+              browsers: ['last 2 versions']
+            })
+          ]
+        }
       },
       {
         test: /\.css$/,
-        use: [ 'style-loader', 'css-loader' ]
+        loader: [ 'style-loader', 'css-loader' ]
       },
       {
         test: /\.less$/,
-        use: [ 'style-loader', 'less-loader' ]
+        loader: [ 'style-loader', 'less-loader' ]
       },
       {
         test: /\.js$/,
-        use: 'babel-loader',
+        loader: 'babel-loader',
         include: [
           path.join(projectRoot, 'lib'),
           path.join(projectRoot, 'demo')

@@ -21,18 +21,6 @@ module.exports = merge(baseWebpackConfig, {
         warnings: false
       }
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.LoaderOptionsPlugin({
-      vue: {
-        loaders: {
-          less: 'vue-style-loader!css-loader!less-loader',
-          postcss: [
-            require('autoprefixer')({
-              browsers: ['last 2 versions']
-            })
-          ]
-        }
-      }
-    })
+    new webpack.optimize.OccurrenceOrderPlugin()
   ]
 })

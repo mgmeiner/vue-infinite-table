@@ -31,13 +31,6 @@ module.exports = merge(baseWebpackConfig, {
       filename: 'index.html',
       template: path.resolve(__dirname, '../demo/index.html'),
       inject: true
-    }),
-    new webpack.LoaderOptionsPlugin({
-      vue: {
-        loaders: {
-          less: 'vue-style-loader!css-loader!less-loader'
-        }
-      }
     })
   ]
 })
