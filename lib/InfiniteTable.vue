@@ -2,14 +2,14 @@
   <div class="vueInfiniteTable">
     <div v-if="debug" class="debug">DataCount: {{data.length}}</div>
 
-    <table>
+    <table :class="_options.style.tableClass">
 
       <thead v-if="_options.header.show">
         <tr>
           <th v-for="column in columns" :class="{sortable: column.sortable}" @click="sort(column)">
             <div>
               <slot :name="'th-' + column.name" :column="column">
-                {{column.displayName}} 
+                {{column.displayName}}
                 <span v-if="column.sortable && column.name === sortColumn">
                   <span v-if="sortDirection === 'ASC'">▲</span><span v-else>▼</span>
                 </span>
@@ -49,7 +49,10 @@
     header: {
       show: true
     },
-    debug: false
+    debug: false,
+    style: {
+      tableClass: null
+    }
   }
 
   export default {
@@ -110,7 +113,7 @@
           this.sortDirection = this.sortDirection === 'DESC' ? 'ASC' : 'DESC';
           this.sortColumn = column.name;
           this.$emit('sort', this.sortColumn, this.sortDirection);
-        } 
+        }
       }
     },
     components: {
