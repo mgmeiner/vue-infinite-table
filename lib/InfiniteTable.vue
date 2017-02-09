@@ -20,7 +20,7 @@
       </thead>
 
       <tbody>
-        <tr v-for="(row, i) in data">
+        <tr v-for="(row, i) in data" @click="rowClick(row, i)">
           <td v-for="column in columns">
             <slot :name="'td-' + column.name" :column="column" :row="row" :value="row[column.name]" :index="i">
                {{row[column.name]}}
@@ -130,6 +130,9 @@
           this.sortColumn = column.name;
           this.refresh();
         }
+      },
+      rowClick (row, index) {
+        this.$emit('rowClick', row, index);
       }
     },
     components: {
