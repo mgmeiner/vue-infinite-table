@@ -31,6 +31,14 @@
 
     </table>
 
+    <slot name="loading-full" v-if="loading.full">
+      loading full...
+    </slot>
+
+    <slot name="loading-partial" v-if="loading.partial">
+      loading partial...
+    </slot>
+
     <scrollManager @pageEnd="onPageEnd" :scrollContainer="_options.scrollContainer" :pageEndMode="_options.pageEndMode" />
   </div>
 </template>
@@ -62,6 +70,10 @@
         type: Array,
         required: true
       },
+      consumeDataCallback: {
+        required: true,
+        type: Function
+      },
       options: {
         type: Object
       }
@@ -72,7 +84,11 @@
         consumeOptions: {},
         _options: null,
         sortColumn: null,
-        sortDirection: null
+        sortDirection: null,
+        loading: {
+          full: false,
+          partial: false
+        }
       }
     },
     created () {
@@ -86,16 +102,20 @@
       this.init();
     },
     methods: {
-      onPageEnd () {
+      onPageEnd: async function () {
         this.consumeOptions.page++;
         this.consumeOptions.offset += this._options.itemsToLoadOnScroll;
         this.consumeOptions.endIndex += this._options.itemsToLoadOnScroll;
-        this.consumeData(this.consumeOptions);
+
+        this.loading.partial = true;
+        try {
+          const consumedData = await this.consumeDataCallback(this.consumeOptions);
+          this.data.push.apply(this.data, consumedData);
+        } finally {
+          this.loading.partial = false;
+        }
       },
-      consumeData (consumeOptions) {
-        this.$emit('consumeData', consumeOptions);
-      },
-      init () {
+      init: async function () {
         this.consumeOptions = {
           page: 0,
           offset: this._options.initialPageSize,
@@ -105,21 +125,20 @@
           sortDirection: this.sortDirection
         }
 
-        this.consumeData({
-          page: 0,
-          offset: 0,
-          pageSize: this._options.initialPageSize,
-          endIndex: this._options.initialPageSize,
-          sortColumn: this.sortColumn,
-          sortDirection: this.sortDirection
-        });
-      },
-      pushData(data) {
-        if (this.consumeOptions.page === 0) {
-          this.data = data;
-        } else {
-          this.data.push.apply(this.data, data);
+        this.loading.full = true;
+        try {
+          this.data = await this.consumeDataCallback({
+            page: 0,
+            offset: 0,
+            pageSize: this._options.initialPageSize,
+            endIndex: this._options.initialPageSize,
+            sortColumn: this.sortColumn,
+            sortDirection: this.sortDirection
+          });
+        } finally {
+          this.loading.full = false;
         }
+
       },
       refresh () {
         this.init();
