@@ -4,7 +4,7 @@
   import _debounce from 'lodash/debounce';
 
   export default {
-    name: 'scrollManager',
+    name: 'vueInfiniteTableScrollManager',
     props: {
       scrollContainer: {
         type: String,
@@ -50,7 +50,7 @@
         if (scrollPosition > oldScrollPosition) {
           if (this.isPageEnd()) {
             this.$emit('pageEnd');
-          } 
+          }
         }
       }, 50)
     },

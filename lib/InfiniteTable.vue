@@ -29,15 +29,23 @@
         </tr>
       </tbody>
 
+      <tfoot v-if="_options.loadingIndicator" class="partialLoadingIndicator">
+        <tr>
+          <td :colspan="columns.length">
+            <slot name="loading-partial" v-if="loading.partial">
+              <loadingIndicator />
+            </slot>
+          </td>
+        </tr>
+      </tfoot>
+
     </table>
 
-    <slot name="loading-full" v-if="loading.full">
-      loading full...
-    </slot>
-
-    <slot name="loading-partial" v-if="loading.partial">
-      loading partial...
-    </slot>
+    <template v-if="_options.loadingIndicator">
+      <slot name="loading-full" v-if="loading.full">
+        <loadingIndicator />
+      </slot>
+    </template>
 
     <scrollManager @pageEnd="onPageEnd" :scrollContainer="_options.scrollContainer" :pageEndMode="_options.pageEndMode" />
   </div>
@@ -45,6 +53,7 @@
 
 <script>
   import ScrollManager from './ScrollManager';
+  import LoadingIndicator from './LoadingIndicator';
   import _merge from 'lodash/merge';
 
   const defaultOptions = {
@@ -54,6 +63,7 @@
     scrollContainer: 'body',
     defaultSortColumn: null,
     defaultSortDirection: 'ASC',
+    loadingIndicator: true,
     header: {
       show: true
     },
@@ -100,6 +110,9 @@
       }
 
       this.init();
+    },
+    mounted () {
+      document.querySelector(this._options.scrollContainer).className += ' vueInfiniteTable-container';
     },
     methods: {
       onPageEnd: async function () {
@@ -155,15 +168,18 @@
       }
     },
     components: {
-      scrollManager: ScrollManager
+      scrollManager: ScrollManager,
+      loadingIndicator: LoadingIndicator
     }
   }
 </script>
 
 <style lang="less">
-  .vueInfiniteTable {
+  .vueInfiniteTable-container {
     position: relative;
+  }
 
+  .vueInfiniteTable {
     table {
       width: 100%;
 
@@ -173,6 +189,11 @@
           cursor: pointer;
         }
       }
+    }
+
+    .partialLoadingIndicator td {
+      position: relative;
+      height: 150px;
     }
 
     .debug {

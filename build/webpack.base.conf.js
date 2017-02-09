@@ -39,6 +39,13 @@ module.exports = {
         loader: [ 'style-loader', 'less-loader' ]
       },
       {
+        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        loader: 'url-loader',
+        query: {
+          limit: 10000
+        }
+      },
+      {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [
