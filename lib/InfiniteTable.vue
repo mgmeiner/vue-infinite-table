@@ -29,7 +29,7 @@
         </tr>
       </tbody>
 
-      <tfoot v-if="_options.loadingIndicator" class="partialLoadingIndicator">
+      <tfoot v-if="_options.loadingIndicator">
         <tr>
           <td :colspan="columns.length">
             <slot name="loading-partial" v-if="loading.partial">
@@ -43,7 +43,7 @@
 
     <template v-if="_options.loadingIndicator">
       <slot name="loading-full" v-if="loading.full">
-        <loadingIndicator />
+        <loadingIndicator full />
       </slot>
     </template>
 
@@ -183,17 +183,17 @@
     table {
       width: 100%;
 
-      th {
+      thead th {
         &.sortable {
           user-select: none;
           cursor: pointer;
         }
       }
-    }
 
-    .partialLoadingIndicator td {
-      position: relative;
-      height: 150px;
+      tfoot td {
+        position: relative;
+        height: 80px;
+      }
     }
 
     .debug {
