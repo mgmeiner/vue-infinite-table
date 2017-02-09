@@ -5,9 +5,8 @@
       <infiniteTable 
         :columns="[{ name: 'id', displayName: 'ID', sortable: true }, { name: 'name', displayName: 'Name', sortable: true }, { name: 'country', displayName: 'Country' }]" 
         :data="data" 
-        @consumeData="onConsumeData" 
-        :options="{ initialPageSize: 50, scrollContainer: '.demoInfiniteTableContainer' }"
-        :debug="false">
+        :consumeDataCallback="onConsumeData" 
+        :options="{ initialPageSize: 50, scrollContainer: '.demoInfiniteTableContainer' }">
       </infiniteTable >
 
     </div>
@@ -30,7 +29,7 @@
     },
     methods: {
       onConsumeData (dataOptions) {
-        this.data.push.apply(this.data, sampleData.companies.slice(dataOptions.offset, dataOptions.endIndex));
+        return sampleData.companies.slice(dataOptions.offset, dataOptions.endIndex);
       }
     }
   }

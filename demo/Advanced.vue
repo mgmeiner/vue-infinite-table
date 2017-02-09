@@ -3,9 +3,8 @@
       <infiniteTable
         :columns="columns" 
         :data="data" 
-        @consumeData="onConsumeData" 
-        :options="{ initialPageSize: 15, itemsToLoadOnScroll: 10, scrollContainer: 'main' }"
-        :debug="false">
+        :consumeDataCallback="onConsumeData" 
+        :options="{ initialPageSize: 15, itemsToLoadOnScroll: 10, scrollContainer: 'main' }">
 
         <template slot="td-actions" scope="scope">
           <button @click="onButtonClick(scope.row.id)" type="button">+</button>
@@ -36,7 +35,11 @@
     },
     methods: {
       onConsumeData (dataOptions) {
-        this.data.push.apply(this.data, sampleData.companies.slice(dataOptions.offset, dataOptions.endIndex));
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(sampleData.companies.slice(dataOptions.offset, dataOptions.endIndex));
+          }, 1000); 
+        });
       },
       onButtonClick (id) {
         alert('Clicked company with id' + id);
