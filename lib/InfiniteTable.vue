@@ -1,7 +1,5 @@
 <template>
   <div class="vueInfiniteTable">
-    <div v-if="debug" class="debug">DataCount: {{data.length}}</div>
-
     <table :class="_options.style.tableClass">
 
       <thead v-if="_options.header.show">
@@ -67,7 +65,6 @@
     header: {
       show: true
     },
-    debug: false,
     style: {
       tableClass: null
     }
