@@ -31,15 +31,14 @@
         const scrollContainerInnerHeight = this.scrollContainerEl.scrollHeight;
         const scrollContainerHeight = this.scrollContainerEl.offsetHeight;
 
-        let pageEnd = (scrollContainerInnerHeight - scrollContainerHeight);
-
+        let scrollPositionAddition = 0;
         if (this.pageEndMode === 'late') {
-          pageEnd -= pageEnd / 5;
+          scrollPositionAddition = 10;
         } else if (this.pageEndMode === 'early') {
-          pageEnd -= pageEnd / 2;
+          scrollPositionAddition = scrollContainerHeight / 2;
         }
 
-        return this.scrollPosition >= pageEnd;
+        return (this.scrollPosition + scrollContainerHeight + scrollPositionAddition) >= scrollContainerInnerHeight;
       },
       onScroll: _debounce(function(e) {
         const scrollPosition = this.scrollContainerEl.scrollTop;
