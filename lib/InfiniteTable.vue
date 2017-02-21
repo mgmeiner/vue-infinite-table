@@ -98,6 +98,11 @@
         }
       }
     },
+    computed: {
+      isLoading: function () {
+        return this.loading.full || this.loading.partial;
+      }
+    },
     created () {
       this._options = _merge(defaultOptions, this.options);
 
@@ -113,16 +118,20 @@
     },
     methods: {
       onPageEnd: async function () {
-        this.consumeOptions.page++;
-        this.consumeOptions.offset += this._options.itemsToLoadOnScroll;
-        this.consumeOptions.endIndex += this._options.itemsToLoadOnScroll;
+        // only if not already loading
+        if (!this.isLoading) {
+          this.consumeOptions.page++;
+          this.consumeOptions.endIndex += this._options.itemsToLoadOnScroll;
 
-        this.loading.partial = true;
-        try {
-          const consumedData = await this.consumeDataCallback(this.consumeOptions);
-          this.data.push.apply(this.data, consumedData);
-        } finally {
-          this.loading.partial = false;
+          this.loading.partial = true;
+          try {
+            const consumedData = await this.consumeDataCallback(this.consumeOptions);
+            this.data.push.apply(this.data, consumedData);
+          } finally {
+            this.loading.partial = false;
+          }
+
+          this.consumeOptions.offset += this._options.itemsToLoadOnScroll;
         }
       },
       init: async function () {
@@ -130,7 +139,7 @@
           page: 0,
           offset: this._options.initialPageSize,
           pageSize: this._options.itemsToLoadOnScroll,
-          endIndex: this._options.initialPageSize + this._options.itemsToLoadOnScroll,
+          endIndex: this._options.initialPageSize,
           sortColumn: this.sortColumn,
           sortDirection: this.sortDirection
         }
