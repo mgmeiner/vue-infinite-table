@@ -29,9 +29,16 @@
 </script>
 
 <style lang="less"> 
+  html, body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    height: 100%;
+    width: 100%;
+  }
+
   .page {
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-flow: column;
     flex-wrap: none;
@@ -40,8 +47,7 @@
       flex-shrink: 0;
       padding: 4rem;
       color: #FFF;
-      background: #00bf8f;  
-      background: linear-gradient(to left, #00bf8f , #001510);  
+      background: linear-gradient(to left, #403B4A , #E7E9BB);
 
       h1 {
         margin: 0;
@@ -53,6 +59,23 @@
       display: flex;
       overflow: auto;
       padding-top: 1rem;
+    }
+
+    nav {
+      margin-top: 1rem;
+
+      a {
+        color: #FFF;
+        border: 1px solid #d3d3d3;
+        padding: 0.5rem;
+        text-decoration: none;
+        font-size: 2rem;
+        transition: opacity 0.1s;
+
+        &:hover {
+          opacity: 0.7;
+        }
+      }
     }
   }
 </style>

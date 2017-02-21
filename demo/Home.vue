@@ -7,7 +7,7 @@
         :data="data" 
         :consumeDataCallback="onConsumeData" 
         :options="{ initialPageSize: 50, scrollContainer: '.demoInfiniteTableContainer' }">
-      </infiniteTable >
+      </infiniteTable>
 
     </div>
    </div>

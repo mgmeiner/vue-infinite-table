@@ -49,6 +49,8 @@
     "json-loader": "^0.5.4",
     "less": "^2.7.2",
     "less-loader": "^2.2.3",
+    "moment": "^2.17.1",
+    "momentjs": "^2.0.0",
     "opn": "^4.0.2",
     "shelljs": "^0.7.4",
     "skeleton-css": "^2.0.4",
