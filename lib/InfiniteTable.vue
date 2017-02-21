@@ -29,10 +29,10 @@
         </tr>
       </tbody>
 
-      <tfoot v-if="_options.loadingIndicator">
+      <tfoot v-if="_options.loadingIndicator && loading.partial">
         <tr>
           <td :colspan="columns.length">
-            <slot name="loading-partial" v-if="loading.partial">
+            <slot name="loading-partial">
               <loadingIndicator />
             </slot>
           </td>
