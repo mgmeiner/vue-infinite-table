@@ -21,7 +21,7 @@
     "dev": "node build/devServer.js"
   },
   "peerDependencies": {
-    "vue": "2.1.x"
+    "vue": "2.x"
   },
   "dependencies": {
     "lodash": "^4.17.4"
