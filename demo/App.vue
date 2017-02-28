@@ -6,7 +6,7 @@
 
         <nav>
           <router-link to="/">Home</router-link>
-          <router-link to="/advanced">Advcanced</router-link>
+          <router-link to="/advanced">Advanced</router-link>
         </nav>
       </div>
     </header>

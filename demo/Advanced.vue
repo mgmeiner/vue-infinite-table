@@ -29,7 +29,7 @@
         columns: [
           { name: 'date', displayName: 'Date' },
           { name: 'daysPassed', displayName: 'Days from now' },
-          { name: 'actions', displayName: 'Date' }
+          { name: 'actions', displayName: 'Actions' }
         ]
       }
     },
