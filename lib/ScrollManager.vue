@@ -46,10 +46,14 @@
         this.scrollPosition = scrollPosition;
 
         // only if user is scrolling downwards
-        if (scrollPosition > oldScrollPosition) {
-          if (this.isPageEnd()) {
-            this.$emit('pageEnd');
-          }
+        if (scrollPosition > oldScrollPosition && this.isPageEnd()) {
+          this.$emit('pageEnd');
+        }
+
+        if (this.scrollPosition > 100) {
+          this.$emit('showHeader');
+        } else {
+          this.$emit('hideHeader');
         }
       }, 50)
     },

@@ -39,13 +39,34 @@
 
     </table>
 
+    <table 
+      v-if="_options.header.show && _options.header.sticky" 
+      v-show="stickyHeader.show"
+      class="vueInfiniteTable-stickyHeader" :style="{ top: stickyHeader.positionTop + 'px'}">
+
+      <thead>
+        <tr>
+          <th v-for="column in columns" :class="{sortable: column.sortable}" @click="sort(column)">
+            <div>
+              <slot :name="'th-' + column.name" :column="column">
+                {{column.displayName}}
+                <span v-if="column.sortable && column.name === sortColumn">
+                  <span v-if="sortDirection === 'ASC'">▲</span><span v-else>▼</span>
+                </span>
+              </slot>
+            </div>
+          </th>
+        </tr>
+      </thead>
+    </table>
+
     <template v-if="_options.loadingIndicator">
       <slot name="loading-full" v-if="loading.full">
         <loadingIndicator full />
       </slot>
     </template>
 
-    <scrollManager @pageEnd="onPageEnd" :scrollContainer="_options.scrollContainer" :pageEndMode="_options.pageEndMode" />
+    <scrollManager @hideHeader="hideHeader" @showHeader="showHeader" @pageEnd="onPageEnd" :scrollContainer="_options.scrollContainer" :pageEndMode="_options.pageEndMode" />
   </div>
 </template>
 
@@ -63,7 +84,8 @@
     defaultSortDirection: 'ASC',
     loadingIndicator: true,
     header: {
-      show: true
+      show: true,
+      sticky: true
     },
     style: {
       tableClass: null
@@ -92,6 +114,11 @@
         _options: null,
         sortColumn: null,
         sortDirection: null,
+        showStickyHeader: false,
+        stickyHeader: {
+          show: false,
+          positionTop: 0
+        },
         loading: {
           full: false,
           partial: false
@@ -114,7 +141,12 @@
       this.init();
     },
     mounted () {
-      document.querySelector(this._options.scrollContainer).className += ' vueInfiniteTable-container';
+      const scrollContainerEl = document.querySelector(this._options.scrollContainer);
+      scrollContainerEl.className += ' vueInfiniteTable-container';
+
+      this.stickyHeader.positionTop = scrollContainerEl.offsetTop;
+
+      console.log(scrollContainerEl);
     },
     methods: {
       onPageEnd: async function () {
@@ -157,7 +189,6 @@
         } finally {
           this.loading.full = false;
         }
-
       },
       refresh () {
         this.init();
@@ -171,6 +202,12 @@
       },
       rowClick (row, index) {
         this.$emit('rowClick', row, index);
+      },
+      hideHeader () {
+        this.stickyHeader.show = false;
+      },
+      showHeader () {
+        this.stickyHeader.show = true;
       }
     },
     components: {
@@ -188,6 +225,7 @@
   .vueInfiniteTable {
     table {
       width: 100%;
+      background-color: #FFF;
 
       thead th {
         &.sortable {
@@ -202,16 +240,8 @@
       }
     }
 
-    .debug {
-      background-color: tomato;
-      padding: 0.5rem;
-      color: #FFF;
+    table.vueInfiniteTable-stickyHeader {
       position: fixed;
-      opacity: 0.4;
-
-      &:hover {
-        opacity: 1;
-      }
     }
   }
 </style>
