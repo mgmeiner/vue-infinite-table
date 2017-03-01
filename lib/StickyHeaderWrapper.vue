@@ -30,9 +30,15 @@
       const scrollContainerEl = document.querySelector(this.scrollContainer);  
       const scrollContainerElRect = scrollContainerEl.getBoundingClientRect();
       const theadEl = scrollContainerEl.querySelector('table:not(.vueInfiniteTable-stickyHeader) thead');
+      const stickyHeaderItemsEl = scrollContainerEl.querySelectorAll('table.vueInfiniteTable-stickyHeader thead th');
 
       this.width = theadEl.clientWidth; 
       this.positionTop = scrollContainerElRect.top;
+
+      theadEl.querySelectorAll('th').forEach((th, i) => {
+        stickyHeaderItemsEl[i].style.width = th.clientWidth + 'px';
+        console.log(th.clientWidth);
+      });
      }
     },
     watch: {
@@ -44,5 +50,7 @@
 </script>
 
 <style lang="less">
-
+  .vueInfiniteTable-stickyHeader {
+    position: fixed;
+  }
 </style>

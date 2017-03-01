@@ -238,9 +238,5 @@
         height: 80px;
       }
     }
-
-    table.vueInfiniteTable-stickyHeader {
-      position: fixed;
-    }
   }
 </style>
