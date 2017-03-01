@@ -39,11 +39,7 @@
 
     </table>
 
-    <table 
-      v-if="_options.header.show && _options.header.sticky" 
-      v-show="stickyHeader.show"
-      class="vueInfiniteTable-stickyHeader" :style="{ top: stickyHeader.positionTop + 'px'}">
-
+    <stickyHeaderWrapper :show="showStickyHeader" :scrollContainer="_options.scrollContainer" v-if="_options.header.show && _options.header.sticky" >
       <thead>
         <tr>
           <th v-for="column in columns" :class="{sortable: column.sortable}" @click="sort(column)">
@@ -58,7 +54,7 @@
           </th>
         </tr>
       </thead>
-    </table>
+    </stickyHeaderWrapper>
 
     <template v-if="_options.loadingIndicator">
       <slot name="loading-full" v-if="loading.full">
@@ -66,12 +62,12 @@
       </slot>
     </template>
 
-    <scrollManager @hideHeader="hideHeader" @showHeader="showHeader" @pageEnd="onPageEnd" :scrollContainer="_options.scrollContainer" :pageEndMode="_options.pageEndMode" />
   </div>
 </template>
 
 <script>
   import ScrollManager from './ScrollManager';
+  import StickyHeaderWrapper from './StickyHeaderWrapper';
   import LoadingIndicator from './LoadingIndicator';
   import _merge from 'lodash/merge';
 
@@ -115,10 +111,6 @@
         sortColumn: null,
         sortDirection: null,
         showStickyHeader: false,
-        stickyHeader: {
-          show: false,
-          positionTop: 0
-        },
         loading: {
           full: false,
           partial: false
@@ -133,23 +125,30 @@
     created () {
       this._options = _merge(defaultOptions, this.options);
 
+      this.scrollManager = new ScrollManager(this._options.pageEndMode, {
+          reachedEnd: this.consumeMore,
+          reachedStart: this.hideHeader,
+          inside: this.showHeader
+        });
+
       this.sortDirection = this._options.defaultSortDirection;
       if (this._options.defaultSortColumn) {
         this.sortColumn = this._options.defaultSortColumn;
       }
 
-      this.init();
+      this.initialConsume();
     },
     mounted () {
       const scrollContainerEl = document.querySelector(this._options.scrollContainer);
       scrollContainerEl.className += ' vueInfiniteTable-container';
 
-      this.stickyHeader.positionTop = scrollContainerEl.offsetTop;
-
-      console.log(scrollContainerEl);
+      this.scrollManager.init(scrollContainerEl);
+    },
+    destroyed () {
+      this.scrollManager.destroy();
     },
     methods: {
-      onPageEnd: async function () {
+      consumeMore: async function () {
         // only if not already loading
         if (!this.isLoading) {
           this.consumeOptions.page++;
@@ -166,7 +165,7 @@
           this.consumeOptions.offset += this._options.itemsToLoadOnScroll;
         }
       },
-      init: async function () {
+      initialConsume: async function () {
         this.consumeOptions = {
           page: 0,
           offset: this._options.initialPageSize,
@@ -191,7 +190,7 @@
         }
       },
       refresh () {
-        this.init();
+        this.initialConsume();
       },
       sort (column) {
         if (column.sortable) {
@@ -204,15 +203,15 @@
         this.$emit('rowClick', row, index);
       },
       hideHeader () {
-        this.stickyHeader.show = false;
+        this.showStickyHeader = false;
       },
       showHeader () {
-        this.stickyHeader.show = true;
+        this.showStickyHeader = true;
       }
     },
     components: {
-      scrollManager: ScrollManager,
-      loadingIndicator: LoadingIndicator
+      loadingIndicator: LoadingIndicator,
+      stickyHeaderWrapper: StickyHeaderWrapper
     }
   }
 </script>
