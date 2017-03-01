@@ -1,5 +1,5 @@
 <template>
-  <table v-show="show" class="vueInfiniteTable-stickyHeader" :style="{ top: positionTop + 'px'}">
+  <table v-show="show" class="vueInfiniteTable-stickyHeader" :style="{ top: positionTop + 'px', width: width + 'px'}">
     <slot />
   </table>
 </template>
@@ -17,15 +17,29 @@
         required: true
       }
     },
-    mounted () {
-      const scrollContainerEl = document.querySelector(this.scrollContainer);
-      this.positionTop = scrollContainerEl.offsetTop;
-    },
     data () {
       return {
-        positionTop: 0
+        positionTop: 0,
+        width: 0
       }
-    }
+    },
+    mounted () {
+    },
+    methods: {
+     justify () {
+      const scrollContainerEl = document.querySelector(this.scrollContainer);  
+      const scrollContainerElRect = scrollContainerEl.getBoundingClientRect();
+      const theadEl = scrollContainerEl.querySelector('table:not(.vueInfiniteTable-stickyHeader) thead');
+
+      this.width = theadEl.clientWidth; 
+      this.positionTop = scrollContainerElRect.top;
+     }
+    },
+    watch: {
+      show () {
+        this.justify();
+      }
+    } 
   }
 </script>
 
