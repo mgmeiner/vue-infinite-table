@@ -23,8 +23,6 @@
         width: 0
       }
     },
-    mounted () {
-    },
     methods: {
      justify () {
       const scrollContainerEl = document.querySelector(this.scrollContainer);  
