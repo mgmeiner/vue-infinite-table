@@ -2,20 +2,7 @@
   <div class="vueInfiniteTable">
     <table :class="_options.style.tableClass">
 
-      <thead v-if="_options.header.show">
-        <tr>
-          <th v-for="column in columns" :class="{sortable: column.sortable}" @click="sort(column)">
-            <div>
-              <slot :name="'th-' + column.name" :column="column">
-                {{column.displayName}}
-                <span v-if="column.sortable && column.name === sortColumn">
-                  <span v-if="sortDirection === 'ASC'">▲</span><span v-else>▼</span>
-                </span>
-              </slot>
-            </div>
-          </th>
-        </tr>
-      </thead>
+      <tableHeader :columns="columns" :sort="sort" @sortBy="sortBy" />
 
       <tbody>
         <tr v-for="(row, i) in data" @click="rowClick(row, i)">
@@ -39,21 +26,8 @@
 
     </table>
 
-    <stickyHeaderWrapper :show="showStickyHeader" :scrollContainer="_options.scrollContainer" v-if="_options.header.show && _options.header.sticky" >
-      <thead>
-        <tr>
-          <th v-for="column in columns" :class="{sortable: column.sortable}" @click="sort(column)">
-            <div>
-              <slot :name="'th-' + column.name" :column="column">
-                {{column.displayName}}
-                <span v-if="column.sortable && column.name === sortColumn">
-                  <span v-if="sortDirection === 'ASC'">▲</span><span v-else>▼</span>
-                </span>
-              </slot>
-            </div>
-          </th>
-        </tr>
-      </thead>
+    <stickyHeaderWrapper :show="showStickyHeader" :scrollContainer="_options.scrollContainer" v-if="_options.header.show && _options.header.sticky" >    
+      <tableHeader :columns="columns" :sort="sort" @sortBy="sortBy" />
     </stickyHeaderWrapper>
 
     <template v-if="_options.loadingIndicator">
@@ -67,9 +41,11 @@
 
 <script>
   import ScrollManager from './ScrollManager';
+  import TableHeader from './TableHeader';
   import StickyHeaderWrapper from './StickyHeaderWrapper';
   import LoadingIndicator from './LoadingIndicator';
-  import _merge from 'lodash/merge';
+  import _merge  from 'lodash/merge';
+  import _debounce from 'lodash/debounce';
 
   const defaultOptions = {
     initialPageSize: 20,
@@ -108,12 +84,14 @@
         data: [],
         consumeOptions: {},
         _options: null,
-        sortColumn: null,
-        sortDirection: null,
         showStickyHeader: false,
         loading: {
           full: false,
           partial: false
+        },
+        sort: {
+          column: null,
+          direction: null
         }
       }
     },
@@ -126,14 +104,14 @@
       this._options = _merge(defaultOptions, this.options);
 
       this.scrollManager = new ScrollManager(this._options.pageEndMode, {
-          reachedEnd: this.consumeMore,
-          reachedStart: this.hideHeader,
-          inside: this.showHeader
-        });
+        reachedEnd: _debounce(this.consume, 100),
+        reachedStart: this.hideHeader,
+        inside: this.showHeader
+      });
 
-      this.sortDirection = this._options.defaultSortDirection;
+      this.sort.direction = this._options.defaultSortDirection;
       if (this._options.defaultSortColumn) {
-        this.sortColumn = this._options.defaultSortColumn;
+        this.sort.column = this._options.defaultSortColumn;
       }
 
       this.initialConsume();
@@ -148,7 +126,7 @@
       this.scrollManager.destroy();
     },
     methods: {
-      consumeMore: async function () {
+      consume: async function () {
         // only if not already loading
         if (!this.isLoading) {
           this.consumeOptions.page++;
@@ -171,8 +149,8 @@
           offset: this._options.initialPageSize,
           pageSize: this._options.itemsToLoadOnScroll,
           endIndex: this._options.initialPageSize,
-          sortColumn: this.sortColumn,
-          sortDirection: this.sortDirection
+          sortColumn: this.sort.column,
+          sortDirection: this.sort.direction
         }
 
         this.loading.full = true;
@@ -182,8 +160,8 @@
             offset: 0,
             pageSize: this._options.initialPageSize,
             endIndex: this._options.initialPageSize,
-            sortColumn: this.sortColumn,
-            sortDirection: this.sortDirection
+            sortColumn: this.sort.column,
+            sortDirection: this.sort.direction
           });
         } finally {
           this.loading.full = false;
@@ -192,10 +170,10 @@
       refresh () {
         this.initialConsume();
       },
-      sort (column) {
+      sortBy (column) {
         if (column.sortable) {
-          this.sortDirection = this.sortDirection === 'DESC' ? 'ASC' : 'DESC';
-          this.sortColumn = column.name;
+          this.sort.direction = this.sort.direction === 'DESC' ? 'ASC' : 'DESC';
+          this.sort.column = column.name;
           this.refresh();
         }
       },
@@ -211,7 +189,8 @@
     },
     components: {
       loadingIndicator: LoadingIndicator,
-      stickyHeaderWrapper: StickyHeaderWrapper
+      stickyHeaderWrapper: StickyHeaderWrapper,
+      tableHeader: TableHeader
     }
   }
 </script>

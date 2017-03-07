@@ -6,7 +6,7 @@
 
 <script>
   export default {
-    name: 'vueInfiniteTableLoadingIndicator',
+    name: 'vueInfiniteTable-loadingIndicator',
     props: {
       full: {
         type: Boolean
