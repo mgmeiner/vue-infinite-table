@@ -1,12 +1,9 @@
 var path = require('path')
 var webpack = require('webpack')
 var merge = require('webpack-merge')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var baseWebpackConfig = require('./webpack.base.conf')
 var FriendlyErrors = require('friendly-errors-webpack-plugin')
-
-var env = process.env.NODE_ENV;
 
 module.exports = merge(baseWebpackConfig, {
   entry: {
@@ -17,13 +14,8 @@ module.exports = merge(baseWebpackConfig, {
     publicPath: '/',
     filename: 'js/[name].[hash].js'
   },
+  devtool: '#cheap-module-eval-source-map',
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"' + env + '"'
-      }
-    }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new FriendlyErrors(),

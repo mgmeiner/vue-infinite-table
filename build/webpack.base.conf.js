@@ -11,7 +11,7 @@ module.exports = {
       path.join(__dirname, '../node_modules')
     ],
     alias: {
-      'vue$': 'vue/dist/vue.common.js'
+      'vue$': 'vue/dist/vue.esm.js'
     }
   },
   module: {
@@ -21,7 +21,7 @@ module.exports = {
         loader: 'vue-loader',
         options: {
           loaders: {
-            less: 'vue-style-loader!css-loader!less-loader' //TODO: enable css-extracting for demo ExtractTextPlugin.extract({fallbackLoader: 'vue-style-loader', loader: 'css-loader!less-loader'})
+            less: 'vue-style-loader!css-loader!less-loader'
           },
           postcss: [
             require('autoprefixer')({

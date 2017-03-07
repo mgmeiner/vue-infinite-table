@@ -37,7 +37,6 @@
 
       theadEl.querySelectorAll('th').forEach((th, i) => {
         stickyHeaderItemsEl[i].style.width = th.clientWidth + 'px';
-        console.log(th.clientWidth);
       });
      }
     },
