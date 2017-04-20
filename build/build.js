@@ -5,12 +5,12 @@ var mode = process.argv[2]
 
 var webpackConfig = null
 
+env.NODE_ENV = 'production'
+
 if (mode === 'lib') {
-    env.NODE_ENV = 'production'
-    webpackConfig = require('./webpack.lib.conf')
+  webpackConfig = require('./webpack.lib.conf')
 } else if (mode === 'demo') {
-    env.NODE_ENV = 'production'
-    webpackConfig = require('./webpack.demo.conf')
+  webpackConfig = require('./webpack.demo.conf')
 }
 
 webpack(webpackConfig, function (err, stats) {

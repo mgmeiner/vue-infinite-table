@@ -1,8 +1,16 @@
 var path = require('path')
-var projectRoot = path.resolve(__dirname, '../')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
+var projectRoot = path.resolve(__dirname, '../')
 var env = process.env.NODE_ENV
-var useCssSourceMap = env === 'development' || false;
+console.log(env, 'blub');
+
+var vueLessLoader = null;
+if (env === 'development') {
+  vueLessLoader = 'vue-style-loader!css-loader!less-loader';
+} else {
+  vueLessLoader = ExtractTextPlugin.extract({ use: 'css-loader!less-loader', fallback: 'vue-style-loader' });
+}
 
 module.exports = {
   resolve: {
@@ -21,7 +29,7 @@ module.exports = {
         loader: 'vue-loader',
         options: {
           loaders: {
-            less: 'vue-style-loader!css-loader!less-loader'
+            less: vueLessLoader
           },
           postcss: [
             require('autoprefixer')({

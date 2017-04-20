@@ -1,5 +1,6 @@
 var webpack = require('webpack')
 var merge = require('webpack-merge')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var baseWebpackConfig = require('./webpack.base.conf')
 
 module.exports = merge(baseWebpackConfig, {
@@ -21,6 +22,7 @@ module.exports = merge(baseWebpackConfig, {
         warnings: false
       }
     }),
-    new webpack.optimize.OccurrenceOrderPlugin()
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new ExtractTextPlugin('[name].css')
   ]
 })
