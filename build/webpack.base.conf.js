@@ -3,7 +3,6 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 var projectRoot = path.resolve(__dirname, '../')
 var env = process.env.NODE_ENV
-console.log(env, 'blub');
 
 var vueLessLoader = null;
 if (env === 'development') {
