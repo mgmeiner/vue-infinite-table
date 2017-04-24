@@ -1,8 +1,13 @@
 <template>
   <div class="vueInfiniteTable">
     <table :class="_options.style.tableClass">
-
-      <tableHeader :columns="columns" :sort="sort" @sortBy="sortBy" />
+      <tableHeader 
+        ref="tableHeader" 
+        v-if="_options.showHeader"
+        :columns="columns" 
+        :sort="sort" 
+        :scrollContainer="_options.scrollContainer"
+        @sortBy="sortBy" />
 
       <tbody>
         <tr v-for="(row, i) in data" @click="rowClick(row, i)">
@@ -26,10 +31,6 @@
 
     </table>
 
-    <stickyHeaderWrapper :show="showStickyHeader" :scrollContainer="_options.scrollContainer" v-if="_options.header.show && _options.header.sticky" >    
-      <tableHeader :columns="columns" :sort="sort" @sortBy="sortBy" />
-    </stickyHeaderWrapper>
-
     <template v-if="_options.loadingIndicator">
       <slot name="loading-full" v-if="loading.full">
         <loadingIndicator full />
@@ -42,7 +43,6 @@
 <script>
   import ScrollManager from './ScrollManager';
   import TableHeader from './TableHeader';
-  import StickyHeaderWrapper from './StickyHeaderWrapper';
   import LoadingIndicator from './LoadingIndicator';
   import _merge  from 'lodash/merge';
   import _debounce from 'lodash/debounce';
@@ -55,10 +55,7 @@
     defaultSortColumn: null,
     defaultSortDirection: 'ASC',
     loadingIndicator: true,
-    header: {
-      show: true,
-      sticky: true
-    },
+    showHeader: true,
     style: {
       tableClass: null
     }
@@ -84,7 +81,6 @@
         data: [],
         consumeOptions: {},
         _options: null,
-        showStickyHeader: false,
         loading: {
           full: false,
           partial: false
@@ -103,11 +99,18 @@
     created () {
       this._options = _merge(defaultOptions, this.options);
 
-      this.scrollManager = new ScrollManager(this._options.pageEndMode, {
-        reachedEnd: _debounce(this.consume, 100),
-        reachedStart: this.hideHeader,
-        inside: this.showHeader
-      });
+      const scrollManagerCallbacks = {
+        reachedEnd: _debounce(this.consume, 100)
+      };
+
+      if (this._options.showHeader) {
+        Object.assign(scrollManagerCallbacks, {
+          reachedStart: () => this.$refs.tableHeader.release(),
+          inside: () => this.$refs.tableHeader.stick()
+        });
+      }
+
+      this.scrollManager = new ScrollManager(this._options.pageEndMode, scrollManagerCallbacks);
 
       this.sort.direction = this._options.defaultSortDirection;
       if (this._options.defaultSortColumn) {
@@ -135,7 +138,7 @@
           this.loading.partial = true;
           try {
             const consumedData = await this.consumeDataCallback(this.consumeOptions);
-            this.data.push.apply(this.data, consumedData);
+            this.data.push.apply(this.data, consumedData);            
           } finally {
             this.loading.partial = false;
           }
@@ -165,6 +168,9 @@
           });
         } finally {
           this.loading.full = false;
+          if (this._options.showHeader) {
+            this.$refs.tableHeader.justify();
+          }
         }
       },
       refresh () {
@@ -179,18 +185,10 @@
       },
       rowClick (row, index) {
         this.$emit('rowClick', row, index);
-      },
-      hideHeader () {
-        this.showStickyHeader = false;
-      },
-      showHeader () {
-        this.showStickyHeader = true;
       }
     },
     components: {
-      loadingIndicator: LoadingIndicator,
-      stickyHeaderWrapper: StickyHeaderWrapper,
-      tableHeader: TableHeader
+      LoadingIndicator, TableHeader
     }
   }
 </script>
