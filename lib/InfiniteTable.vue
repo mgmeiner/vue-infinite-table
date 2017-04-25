@@ -48,8 +48,7 @@
   import _debounce from 'lodash/debounce';
 
   const defaultOptions = {
-    initialPageSize: 20,
-    itemsToLoadOnScroll: 5,
+    itemsToLoadOnScroll: 20,
     pageEndMode: 'late',
     scrollContainer: 'body',
     defaultSortColumn: null,
@@ -149,23 +148,16 @@
       initialConsume: async function () {
         this.consumeOptions = {
           page: 0,
-          offset: this._options.initialPageSize,
+          offset: 0,
           pageSize: this._options.itemsToLoadOnScroll,
-          endIndex: this._options.initialPageSize,
+          endIndex: this._options.itemsToLoadOnScroll,
           sortColumn: this.sort.column,
           sortDirection: this.sort.direction
-        }
+        };
 
         this.loading.full = true;
         try {
-          this.data = await this.consumeDataCallback({
-            page: 0,
-            offset: 0,
-            pageSize: this._options.initialPageSize,
-            endIndex: this._options.initialPageSize,
-            sortColumn: this.sort.column,
-            sortDirection: this.sort.direction
-          });
+          this.data = await this.consumeDataCallback(this.consumeOptions);
         } finally {
           this.loading.full = false;
           if (this._options.showHeader) {
