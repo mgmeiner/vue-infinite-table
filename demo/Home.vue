@@ -2,11 +2,11 @@
   <div class="container">
     <div class="demoInfiniteTableContainer">
 
-      <infiniteTable 
-        :columns="[{ name: 'id', displayName: 'ID', sortable: true }, { name: 'name', displayName: 'Name', sortable: true }, { name: 'country', displayName: 'Country' }]" 
+      <infiniteTable
+        :columns="[{ name: 'full_name', displayName: 'Name' }, { name: 'stargazers_count', displayName: 'Stars', sortable: true }]"
         :data="data" 
         :consumeDataCallback="onConsumeData" 
-        :options="{ initialPageSize: 50, scrollContainer: '.demoInfiniteTableContainer' }">
+        :options="{ itemsToLoadOnScroll: 25, scrollContainer: '.demoInfiniteTableContainer', defaultSortColumn: 'stargazers_count', defaultSortDirection: 'DESC' }">
       </infiniteTable>
 
     </div>
@@ -15,7 +15,11 @@
 
 <script>
   import infiniteTable from '../lib/InfiniteTable';
-  import sampleData from './data.json';
+  import axios from 'axios';
+
+  const githubApi = axios.create({
+    headers: { 'Content-Type': 'application/vnd.github.v3+json' }
+  })
 
   export default {
     name: 'home',
@@ -24,13 +28,22 @@
         data: []
       }
     },
+    methods: {
+      async onConsumeData  (dataOptions) {
+        const params = {
+          q: 'vue in:name',
+          page: dataOptions.page + 1,
+          per_page: dataOptions.pageSize,
+          sort: 'stars',
+          order: dataOptions.sortDirection.toLowerCase()
+        }
+
+        const res = await githubApi.get('https://api.github.com/search/repositories', {  params });
+        return res.data.items;
+      }
+    },
     components: {
       infiniteTable
-    },
-    methods: {
-      onConsumeData (dataOptions) {
-        return sampleData.companies.slice(dataOptions.offset, dataOptions.endIndex);
-      }
     }
   }
 </script>

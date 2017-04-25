@@ -3,11 +3,6 @@
     <header>
       <div class="container">
         <h1>VUE-INFINITE-TABLE</h1>
-
-        <nav>
-          <router-link to="/">Home</router-link>
-          <router-link to="/advanced">Advanced</router-link>
-        </nav>
       </div>
     </header>
 
