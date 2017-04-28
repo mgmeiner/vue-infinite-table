@@ -1,11 +1,11 @@
 <template>
   <div class="vueInfiniteTable">
     <table :class="_options.style.tableClass">
-      <tableHeader 
-        ref="tableHeader" 
+      <tableHeader
+        ref="tableHeader"
         v-if="_options.showHeader"
-        :columns="columns" 
-        :sort="sort" 
+        :columns="columns"
+        :sort="sort"
         :scrollContainer="_options.scrollContainer"
         @sortBy="sortBy" />
 
@@ -133,16 +133,15 @@
         if (!this.isLoading) {
           this.consumeOptions.page++;
           this.consumeOptions.endIndex += this._options.itemsToLoadOnScroll;
+          this.consumeOptions.offset += this._options.itemsToLoadOnScroll;
 
           this.loading.partial = true;
           try {
             const consumedData = await this.consumeDataCallback(this.consumeOptions);
-            this.data.push.apply(this.data, consumedData);            
+            this.data.push.apply(this.data, consumedData);
           } finally {
             this.loading.partial = false;
           }
-
-          this.consumeOptions.offset += this._options.itemsToLoadOnScroll;
         }
       },
       initialConsume: async function () {
