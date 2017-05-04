@@ -165,6 +165,7 @@
         }
       },
       refresh () {
+        this.scrollManager.scrollToTop();
         this.initialConsume();
       },
       sortBy (column) {
