@@ -38,7 +38,7 @@
           order: dataOptions.sortDirection.toLowerCase()
         }
 
-        const res = await githubApi.get('https://api.github.com/search/repositories', {  params });
+        const res = await githubApi.get('https://api.github.com/search/repositories', { params });
         return res.data.items;
       }
     },
@@ -50,7 +50,7 @@
 
 <style lang="less">
   .demoInfiniteTableContainer {
-    max-height: 50vh;
+    height: 50vh;
     overflow: auto;
   }
 </style>
