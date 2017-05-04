@@ -19,28 +19,31 @@
         </tr>
       </tbody>
 
-      <tfoot v-if="_options.loadingIndicator && loading.partial">
-        <tr>
-          <td :colspan="columns.length">
-            <slot name="loading-partial">
-              <loadingIndicator />
-            </slot>
-          </td>
-        </tr>
-      </tfoot>
+      <transition name="loadingIndicator-fade">
+        <tfoot v-if="_options.loadingIndicator && loading.partial">
+          <tr>
+            <td :colspan="columns.length">
+              <slot name="loading-partial">
+                <loadingIndicator />
+              </slot>
+            </td>
+          </tr>
+        </tfoot>
+      </transition>
 
     </table>
 
-    <template v-if="_options.loadingIndicator">
-      <slot name="loading-full" v-if="loading.full">
+    <transition name="loadingIndicator-fade" appear>
+      <slot name="loading-full" v-if="_options.loadingIndicator && loading.full" >
         <loadingIndicator full />
       </slot>
-    </template>
+    </transition>
 
   </div>
 </template>
 
 <script>
+  import Vue from 'vue';
   import ScrollManager from './ScrollManager';
   import TableHeader from './TableHeader';
   import LoadingIndicator from './LoadingIndicator';
@@ -49,7 +52,7 @@
 
   const defaultOptions = {
     itemsToLoadOnScroll: 20,
-    pageEndMode: 'late',
+    pageEndOffset: 10, //px
     scrollContainer: 'body',
     defaultSortColumn: null,
     defaultSortDirection: 'ASC',
@@ -99,7 +102,7 @@
       this._options = _merge(defaultOptions, this.options);
 
       const scrollManagerCallbacks = {
-        reachedEnd: _debounce(this.consume, 100)
+        reachedEnd: this.consume
       };
 
       if (this._options.showHeader) {
@@ -109,7 +112,7 @@
         });
       }
 
-      this.scrollManager = new ScrollManager(this._options.pageEndMode, scrollManagerCallbacks);
+      this.scrollManager = new ScrollManager(this._options.pageEndOffset, scrollManagerCallbacks);
 
       this.sort.direction = this._options.defaultSortDirection;
       if (this._options.defaultSortColumn) {
@@ -136,9 +139,14 @@
           this.consumeOptions.offset += this._options.itemsToLoadOnScroll;
 
           this.loading.partial = true;
+
+          Vue.nextTick(() => {
+            this.scrollManager.scrollToEnd();
+          });
+
           try {
             const consumedData = await this.consumeDataCallback(this.consumeOptions);
-            this.data.push.apply(this.data, consumedData);
+            this.data.push.apply(this.data, consumedData);   
           } finally {
             this.loading.partial = false;
           }
@@ -202,9 +210,28 @@
         }
       }
 
-      tfoot td {
-        position: relative;
-        height: 80px;
+      tfoot {
+        td {
+          position: relative;
+          height: 80px;
+        }
+      }
+    }
+
+    .loadingIndicator-fade {
+      &-enter-active,
+      &-leave-active {
+        transition: 500ms;
+      }
+
+      &-leave-to,
+      &-enter {
+        opacity: 0;
+      }
+
+      &-enter-to,
+      &-leave {
+        opacity: 1;
       }
     }
   }
