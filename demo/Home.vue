@@ -38,8 +38,8 @@
           order: dataOptions.sortDirection.toLowerCase()
         }
 
-        const res = await githubApi.get('https://api.github.com/search/repositories', { params });
-        return res.data.items;
+        const res = await githubApi.get('https://api.github.com/search/repositories', { params })
+        return res.data.items
       }
     },
     components: {

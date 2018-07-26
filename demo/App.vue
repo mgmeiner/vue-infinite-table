@@ -20,7 +20,7 @@
     components: {
       home: Home
     }
-  };
+  }
 </script>
 
 <style lang="less"> 
