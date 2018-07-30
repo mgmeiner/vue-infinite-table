@@ -1,13 +1,20 @@
 <template>
   <div class="vueInfiniteTable">
     <table :class="opts.style.tableClass">
-      <tableHeader
-        ref="tableHeader"
-        v-if="opts.showHeader"
-        :columns="columns"
-        :sort="sort"
-        :scrollContainer="opts.scrollContainer"
-        @sortBy="sortBy" />
+      <thead>
+        <tr>
+          <th v-for="column in columns" :class="{sortable: column.sortable}" @click="sortBy(column)" :key="'infiniteTable-th-' + column.name">
+            <div>
+              <slot :name="'th-' + column.name" :column="column">
+                {{column.displayName}}
+                <span v-if="column.sortable && column.name === sort.column">
+                  <span v-if="sort.direction === 'ASC'">▲</span><span v-else>▼</span>
+                </span>
+              </slot>
+            </div>
+          </th>
+        </tr>
+      </thead>
 
       <tbody>
         <tr v-for="(row, i) in data" @click="rowClick(row, i)" :key="'infiniteTable-tr-' + i">
@@ -45,7 +52,6 @@
 <script>
   import Vue from 'vue';
   import ScrollManager from './ScrollManager';
-  import TableHeader from './TableHeader';
   import LoadingIndicator from './LoadingIndicator';
   import _merge  from 'lodash/merge';
 
@@ -174,7 +180,7 @@
       }
     },
     components: {
-      LoadingIndicator, TableHeader
+      LoadingIndicator
     }
   }
 </script>
@@ -187,6 +193,17 @@
   .vueInfiniteTable {
     table {
       width: 100%;
+
+      thead th {
+        position: sticky;
+        top: 0;
+        background-color: #FFF;
+
+        &.sortable {
+          user-select: none;
+          cursor: pointer;
+        }
+      }
 
       tfoot {
         td {
