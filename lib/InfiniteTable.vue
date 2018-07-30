@@ -51,7 +51,7 @@
 
   const defaultOptions = {
     itemsToLoadOnScroll: 20,
-    pageEndOffset: 10, //px
+    pageEndOffset: 10, // px
     scrollContainer: 'body',
     defaultSortColumn: null,
     defaultSortDirection: 'ASC',
@@ -100,18 +100,9 @@
     created () {
       this.opts = _merge(defaultOptions, this.options);
 
-      const scrollManagerCallbacks = {
+      this.scrollManager = new ScrollManager(this.opts.pageEndOffset, {
         reachedEnd: this.consume
-      };
-
-      if (this.opts.showHeader) {
-        Object.assign(scrollManagerCallbacks, {
-          reachedStart: () => this.$refs.tableHeader.release(),
-          inside: () => this.$refs.tableHeader.stick()
-        });
-      }
-
-      this.scrollManager = new ScrollManager(this.opts.pageEndOffset, scrollManagerCallbacks);
+      });
 
       this.sort.direction = this.opts.defaultSortDirection;
       if (this.opts.defaultSortColumn) {
@@ -131,7 +122,6 @@
     },
     methods: {
       consume: async function () {
-        // only if not already loading
         if (!this.isLoading) {
           this.consumeOptions.page++;
           this.consumeOptions.endIndex += this.opts.itemsToLoadOnScroll;
@@ -166,9 +156,6 @@
           this.data = await this.consumeDataCallback(this.consumeOptions);
         } finally {
           this.loading.full = false;
-          if (this.opts.showHeader) {
-            this.$refs.tableHeader.justify();
-          }
         }
       },
       refresh () {
@@ -200,14 +187,6 @@
   .vueInfiniteTable {
     table {
       width: 100%;
-      background-color: #FFF;
-
-      thead th {
-        &.sortable {
-          user-select: none;
-          cursor: pointer;
-        }
-      }
 
       tfoot {
         td {
