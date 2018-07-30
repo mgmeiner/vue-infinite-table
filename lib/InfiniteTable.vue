@@ -1,17 +1,17 @@
 <template>
   <div class="vueInfiniteTable">
-    <table :class="_options.style.tableClass">
+    <table :class="opts.style.tableClass">
       <tableHeader
         ref="tableHeader"
-        v-if="_options.showHeader"
+        v-if="opts.showHeader"
         :columns="columns"
         :sort="sort"
-        :scrollContainer="_options.scrollContainer"
+        :scrollContainer="opts.scrollContainer"
         @sortBy="sortBy" />
 
       <tbody>
-        <tr v-for="(row, i) in data" @click="rowClick(row, i)">
-          <td v-for="column in columns">
+        <tr v-for="(row, i) in data" @click="rowClick(row, i)" :key="'infiniteTable-tr-' + i">
+          <td v-for="column in columns" :key="'infiniteTable-td-' + column.name">
             <slot :name="'td-' + column.name" :column="column" :row="row" :value="row[column.name]" :index="i">
                {{row[column.name]}}
             </slot>
@@ -20,7 +20,7 @@
       </tbody>
 
       <transition name="loadingIndicator-fade">
-        <tfoot v-if="_options.loadingIndicator && loading.partial">
+        <tfoot v-if="opts.loadingIndicator && loading.partial">
           <tr>
             <td :colspan="columns.length">
               <slot name="loading-partial">
@@ -34,7 +34,7 @@
     </table>
 
     <transition name="loadingIndicator-fade" appear>
-      <slot name="loading-full" v-if="_options.loadingIndicator && loading.full" >
+      <slot name="loading-full" v-if="opts.loadingIndicator && loading.full" >
         <loadingIndicator full />
       </slot>
     </transition>
@@ -48,7 +48,6 @@
   import TableHeader from './TableHeader';
   import LoadingIndicator from './LoadingIndicator';
   import _merge  from 'lodash/merge';
-  import _debounce from 'lodash/debounce';
 
   const defaultOptions = {
     itemsToLoadOnScroll: 20,
@@ -82,7 +81,7 @@
       return {
         data: [],
         consumeOptions: {},
-        _options: null,
+        opts: null,
         loading: {
           full: false,
           partial: false
@@ -99,30 +98,30 @@
       }
     },
     created () {
-      this._options = _merge(defaultOptions, this.options);
+      this.opts = _merge(defaultOptions, this.options);
 
       const scrollManagerCallbacks = {
         reachedEnd: this.consume
       };
 
-      if (this._options.showHeader) {
+      if (this.opts.showHeader) {
         Object.assign(scrollManagerCallbacks, {
           reachedStart: () => this.$refs.tableHeader.release(),
           inside: () => this.$refs.tableHeader.stick()
         });
       }
 
-      this.scrollManager = new ScrollManager(this._options.pageEndOffset, scrollManagerCallbacks);
+      this.scrollManager = new ScrollManager(this.opts.pageEndOffset, scrollManagerCallbacks);
 
-      this.sort.direction = this._options.defaultSortDirection;
-      if (this._options.defaultSortColumn) {
-        this.sort.column = this._options.defaultSortColumn;
+      this.sort.direction = this.opts.defaultSortDirection;
+      if (this.opts.defaultSortColumn) {
+        this.sort.column = this.opts.defaultSortColumn;
       }
 
       this.initialConsume();
     },
     mounted () {
-      const scrollContainerEl = document.querySelector(this._options.scrollContainer);
+      const scrollContainerEl = document.querySelector(this.opts.scrollContainer);
       scrollContainerEl.className += ' vueInfiniteTable-container';
 
       this.scrollManager.init(scrollContainerEl);
@@ -135,8 +134,8 @@
         // only if not already loading
         if (!this.isLoading) {
           this.consumeOptions.page++;
-          this.consumeOptions.endIndex += this._options.itemsToLoadOnScroll;
-          this.consumeOptions.offset += this._options.itemsToLoadOnScroll;
+          this.consumeOptions.endIndex += this.opts.itemsToLoadOnScroll;
+          this.consumeOptions.offset += this.opts.itemsToLoadOnScroll;
 
           this.loading.partial = true;
 
@@ -156,8 +155,8 @@
         this.consumeOptions = {
           page: 0,
           offset: 0,
-          pageSize: this._options.itemsToLoadOnScroll,
-          endIndex: this._options.itemsToLoadOnScroll,
+          pageSize: this.opts.itemsToLoadOnScroll,
+          endIndex: this.opts.itemsToLoadOnScroll,
           sortColumn: this.sort.column,
           sortDirection: this.sort.direction
         };
@@ -167,7 +166,7 @@
           this.data = await this.consumeDataCallback(this.consumeOptions);
         } finally {
           this.loading.full = false;
-          if (this._options.showHeader) {
+          if (this.opts.showHeader) {
             this.$refs.tableHeader.justify();
           }
         }
