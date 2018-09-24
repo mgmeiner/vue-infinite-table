@@ -104,7 +104,7 @@
       }
     },
     created () {
-      this.opts = _merge(defaultOptions, this.options);
+      this.opts = _merge({}, defaultOptions, this.options);
 
       this.scrollManager = new ScrollManager(this.opts.pageEndOffset, {
         reachedEnd: this.consume
