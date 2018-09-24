@@ -4492,12 +4492,12 @@ __webpack_require__.r(__webpack_exports__);
 // EXTERNAL MODULE: ./node_modules/@vue/cli-service/lib/commands/build/setPublicPath.js
 var setPublicPath = __webpack_require__("1eb2");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"/home/michael/work/git/vue-infinite-table/node_modules/.cache/vue-loader","cacheIdentifier":"61570f66-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./lib/InfiniteTable.vue?vue&type=template&id=285e5389&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"/home/michael/work/git/vue-infinite-table/node_modules/.cache/vue-loader","cacheIdentifier":"61570f66-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./lib/InfiniteTable.vue?vue&type=template&id=2c7bed73&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"vueInfiniteTable"},[_c('table',{class:_vm.opts.style.tableClass},[_c('thead',[_c('tr',_vm._l((_vm.columns),function(column){return _c('th',{key:'infiniteTable-th-' + column.name,class:{sortable: column.sortable},on:{"click":function($event){_vm.sortBy(column)}}},[_c('div',[_vm._t('th-' + column.name,[_vm._v("\n              "+_vm._s(column.displayName)+"\n              "),(column.sortable && column.name === _vm.sort.column)?_c('span',[(_vm.sort.direction === 'ASC')?_c('span',[_vm._v("▲")]):_c('span',[_vm._v("▼")])]):_vm._e()],{column:column})],2)])}))]),_c('tbody',_vm._l((_vm.data),function(row,i){return _c('tr',{key:'infiniteTable-tr-' + i,on:{"click":function($event){_vm.rowClick(row, i)}}},_vm._l((_vm.columns),function(column){return _c('td',{key:'infiniteTable-td-' + column.name},[_vm._t('td-' + column.name,[_vm._v("\n             "+_vm._s(row[column.name])+"\n          ")],{column:column,row:row,value:row[column.name],index:i})],2)}))})),_c('transition',{attrs:{"name":"loadingIndicator-fade"}},[(_vm.opts.loadingIndicator && _vm.loading.partial)?_c('tfoot',[_c('tr',[_c('td',{attrs:{"colspan":_vm.columns.length}},[_vm._t("loading-partial",[_c('loadingIndicator')])],2)])]):_vm._e()])],1),_c('transition',{attrs:{"name":"loadingIndicator-fade","appear":""}},[(_vm.opts.loadingIndicator && _vm.loading.full)?_vm._t("loading-full",[_c('loadingIndicator',{attrs:{"full":""}})]):_vm._e()],2)],1)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./lib/InfiniteTable.vue?vue&type=template&id=285e5389&
+// CONCATENATED MODULE: ./lib/InfiniteTable.vue?vue&type=template&id=2c7bed73&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.function.name.js
 var es6_function_name = __webpack_require__("7f7f");
@@ -4892,7 +4892,7 @@ var defaultOptions = {
     }
   },
   created: function created() {
-    this.opts = merge_default()(defaultOptions, this.options);
+    this.opts = merge_default()({}, defaultOptions, this.options);
     this.scrollManager = new lib_ScrollManager(this.opts.pageEndOffset, {
       reachedEnd: this.consume
     });
